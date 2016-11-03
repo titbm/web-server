@@ -9,20 +9,11 @@ var express = require('express');
 var server = express();
 const PORT = 3000;
 
-var middleware = { // объект middleware
-  requireAuthentification: function (request, response, next) { // метод requireAuthentification. Request - запрос, response - ответ, next -  функция, которая указывает на переход к выполнению основной функции, если ее не использовать сервер выполнит код метода и зависнет в ожидании
-    console.log ('хуй');
-    next();
-  },
-  logger: function (request, response, next) {
-    console.log(request.method, request.originalUrl); // method - свойство содержащее метод запроса (GET, POST...), originalUrl - содержит относительный адрес запроса
-    next();
-  }
-};
+var middleware = require('./middleware.js');
 
-server.use(middleware.requireAuthentification); // такая запись означает, что метод requireAuthentification будет срабатывать при любом обращении к серверу. Порядок записи важен - функция должна вызываться до описания всех запросов к серверу (server.get и др.) или она сработает только на тех запросах, которые описаны после нее.
+server.use(middleware.logger); // такая запись означает, что метод requireAuthentification будет срабатывать при любом обращении к серверу. Порядок записи важен - функция должна вызываться до описания всех запросов к серверу (server.get и др.) или она сработает только на тех запросах, которые описаны после нее.
 
-server.get('/about', middleware.logger, function (request, response) { // такая запись означает, что метод logger будет срабатывать только при переходе на страницу /about
+server.get('/about', function (request, response) { // такая запись означает, что метод logger будет срабатывать только при переходе на страницу /about
   response.send('About page');
 });
 
